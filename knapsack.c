@@ -25,7 +25,19 @@ int g_bestValue = 0;       // meilleure valeur trouvée jusqu'à présent
 int g_currentValue = 0;    // valeur courante du sac
 int g_currentWeight = 0;   // poids courant du sac
 
-// implémentation récursive de l'algorithme de backtracking
+
+// Fonction pour calculer la borne sup: << the currentValue + la valeur de tous les objets restées>> 
+// note: si (borneSup <= *best_value) alors ça ne sert a rien de continuer le travail sur la branche !!! 
+int borne_sup(Item items[], int n, int idx, int currentValue) {
+    int i, borne_sup = currentValue;
+    for(i = idx ; i < n ; i++) {
+        borne_sup += g_itmes[i].value;
+    }
+    return borne_sup;
+}
+
+
+// implémentation récursive de l'algorithme de backtracking 
 void knapsackBT1(int idx) {
     // Si l'indice actuel est hors le tableau ou si le sac à dos est plein, mettre à jour bestValue si nécessaire
     if (idx == g_n || g_currentWeight == g_W) {
@@ -33,6 +45,10 @@ void knapsackBT1(int idx) {
         return;
     }
 
+	int bsup = borne_sup(g_itmes, g_n, idx, g_currentValue);
+    if (bsup <= g_bestValue) {
+        return ;
+    }
     // sauter l'objet courant
     knapsackBT1(idx + 1);
 
@@ -52,14 +68,16 @@ void knapsackBT1(int idx) {
 
 
 
-
-
-
 // Algorithme de backtracking sans variables globales
 int knapsackBTUtil(Item items[], int n, int W, int idx, int currentValue, int *bestValue) {
     if (idx == n || W == 0) {
         if (currentValue > *bestValue)
             *bestValue = currentValue;
+        return *bestValue;
+    }
+
+    int bsup = borne_sup(items, n, idx, currentValue);
+    if (bsup <= *bestValue) {
         return *bestValue;
     }
 
@@ -145,6 +163,7 @@ int main() {
         Item items[n];
         char *token = strtok(line, ",");
         token = strtok(NULL, ","); // Passer les deux premiers tokens (W et n)
+        token = strtok(NULL, ",");
         for (int i = 0; i < n && token != NULL; i++) {
             sscanf(token, "%d", &items[i].weight);
             token = strtok(NULL, ",");

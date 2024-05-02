@@ -3,8 +3,8 @@ import random
 
 # Constants for generating instances
 NUM_INSTANCES_PER_SIZE = 10  # Number of instances to generate per problem size
-MAX_ITEMS = 29              # Maximum number of items in the largest problem
-MIN_ITEMS = 5                # Minimum number of items in the smallest problem
+MAX_ITEMS = 50            # Maximum number of items in the largest problem
+MIN_ITEMS = 20                # Minimum number of items in the smallest problem
 ITEM_STEP = 1                # Step size for increasing number of items
 MAX_WEIGHT = 10
 MAX_VALUE = 10
