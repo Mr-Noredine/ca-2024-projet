@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-
+#include <limits.h>
 
 // Fonction utilitaire pour obtenir le maximum de deux nombres.
 int max(int a, int b) { return (a > b) ? a : b; }
-
+int min(int a, int b) { return (a < b) ? a : b; }
 
 
 // Définition de la structure pour les objets.
@@ -24,7 +24,7 @@ int g_W;            // capacité du sac
 int g_bestValue = 0;       // meilleure valeur trouvée jusqu'à présent
 int g_currentValue = 0;    // valeur courante du sac
 int g_currentWeight = 0;   // poids courant du sac
-
+int* dp;                   // tableau des poids minimales pour atteindre la valeur des objets
 
 // Fonction pour calculer la borne sup: << the currentValue + la valeur de tous les objets restées>> 
 // note: si (borneSup <= *best_value) alors ça ne sert a rien de continuer le travail sur la branche !!! 
@@ -97,7 +97,37 @@ int knapsackBT2(Item items[], int n, int W) {
     return knapsackBTUtil(items, n, W, 0, 0, &bestValue);
 }
 
+/**** Exercice 05 :                         ****/
+// Focntion qui retourne la somme des valeurs des objets dans le tableau tab
+int getSommeValue(Item items[], int n) {
+    int v = 0;
+    for(int i = 0; i < n ; i++) {
+        v += items[i].value;
+    }
+    return v;
+}
 
+
+void initialiserDP(Item items[], int * dp, int n) {
+    dp[0] = 0;
+    for(int i = 1; i < n ; i++) {
+        dp[i] = __INT_MAX__;
+    }
+} 
+
+int knapsackDP_Value(Item * items, int v, int i) {
+    if (v == 0) return 0;
+    return min(knapsackDP_Value(items, v - items[i].value, i-1), knapsackDP_Value(items, v, i-1));
+}
+
+void construireDP(Item * items, int * dp, int n) {
+    int V = getSommeValue(items, n);
+    initialiserDP(items, dp, V);
+    int i;
+    for(i = 0 ; i < V ; i++) {
+        dp[i] = knapsackDP_Value(items, i, n);
+    }
+}
 
 
 
